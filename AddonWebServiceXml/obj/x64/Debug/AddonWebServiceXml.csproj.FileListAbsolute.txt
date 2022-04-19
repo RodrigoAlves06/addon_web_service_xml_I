@@ -1,0 +1,12 @@
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\bin\x64\Debug\AddonWebServiceXml.exe.config
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\bin\x64\Debug\AddonWebServiceXml.exe
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\bin\x64\Debug\AddonWebServiceXml.pdb
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.csproj.AssemblyReference.cache
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.csproj.SuggestedBindingRedirects.cache
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.Properties.Resources.resources
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.csproj.GenerateResource.cache
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.csproj.CoreCompileInputs.cache
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.exe
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.pdb
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\Interop.SAPbouiCOM.dll
+C:\ALFA\COPROSUL\AddonWebServiceXml\AddonWebServiceXml\obj\x64\Debug\AddonWebServiceXml.csproj.ResolveComReference.cache
