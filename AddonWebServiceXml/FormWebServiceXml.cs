@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using SAPbouiCOM;
+using SAPbobsCOM;
 
 namespace AddonWebServiceXml
 {
@@ -13,7 +16,12 @@ namespace AddonWebServiceXml
         private SAPbouiCOM.Form oForm;
         private SAPbouiCOM.Item oItem;
         private SAPbouiCOM.Grid oGrid;
-        
+        //public SAPbobsCOM.Recordset oRset;
+        public static SAPbobsCOM.Company _company;
+        private UserTablesMD _userTable = null;
+        private UserFieldsMD _userTableMD = null;
+        private UserObjectsMD _userObjects = null;
+
         private void SetApplication()
         {
             SboGuiApi oSboGuiApi = null;
@@ -175,7 +183,7 @@ namespace AddonWebServiceXml
                 oItem.FromPane = 1;
                 oItem.ToPane = 1;
 
-                //oItem.LinkTo = "cmb"; //Serve para linkar o objeto com outro.
+                oItem.LinkTo = "lblDtI"; //Serve para linkar o objeto com outro.
 
                 oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
                 oStaticText.Caption = "Período de Faturamento:";
@@ -191,7 +199,7 @@ namespace AddonWebServiceXml
                 oItem.FromPane = 1;
                 oItem.ToPane = 1;
 
-                //oItem.LinkTo = "cmb"; //Serve para linkar o objeto com outro.
+                oItem.LinkTo = "txtDtI"; //Serve para linkar o objeto com outro.
 
                 oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
                 oStaticText.Caption = "Data Início:";
@@ -226,7 +234,7 @@ namespace AddonWebServiceXml
                 oItem.FromPane = 1;
                 oItem.ToPane = 1;
 
-                //oItem.LinkTo = "cmb"; //Serve para linkar o objeto com outro.
+                oItem.LinkTo = "txtDtF"; //Serve para linkar o objeto com outro.
 
                 oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
                 oStaticText.Caption = "Data Fim:";
@@ -279,7 +287,7 @@ namespace AddonWebServiceXml
                 oItem.FromPane = 1;
                 oItem.ToPane = 1;
 
-                // oItem.LinkTo = "EditText1"; Serve para linkar o objeto com outro.
+                oItem.LinkTo = "lblC"; //Serve para linkar o objeto com outro.
 
                 oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
 
@@ -293,6 +301,10 @@ namespace AddonWebServiceXml
                 oItem.Width = 120;
                 oItem.Top = 130;
                 oItem.Height = 19;
+
+                oItem.FromPane = 1;
+                oItem.ToPane = 1;
+
                 oButton = ((SAPbouiCOM.Button)(oItem.Specific));
                 oButton.Caption = "Selecione a pasta XML";
 
@@ -313,7 +325,7 @@ namespace AddonWebServiceXml
                 oForm.DataSources.DataTables.Add("DataTable");
                 string query = @"SELECT 
                     '' AS ""Selecione"" 
-                    , ""CardCode"" AS ""Data do Faturamento"",
+                    , ""CardCode"", /* AS ""Data do Faturamento"",*/
                     ""CardName"" AS ""Número da NF"" 
                     , ""DocDate"" AS ""Código do PN""
                     , ""DocDate"" AS ""Nome do PN""
@@ -335,8 +347,28 @@ namespace AddonWebServiceXml
                 oGrid.Columns.Item(6).Width = 100;
                 oGrid.Columns.Item(7).Width = 180;
 
-
                 oForm.PaneLevel = 1;
+
+                // setando para as colunas não serem editaveis.
+
+                oGrid.Columns.Item(1).Editable = false;
+                oGrid.Columns.Item(2).Editable = false;
+                oGrid.Columns.Item(3).Editable = false;
+                oGrid.Columns.Item(4).Editable = false;
+                oGrid.Columns.Item(5).Editable = false;
+                oGrid.Columns.Item(6).Editable = false;
+                oGrid.Columns.Item(7).Editable = false;
+
+                oGrid.Columns.Item(0).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
+
+                // Fazendo uma coluna um botão para abrir o documento.
+
+                SAPbouiCOM.EditTextColumn oEditCol;
+                oEditCol = ((SAPbouiCOM.EditTextColumn)(oGrid.Columns.Item("CardCode")));
+                oEditCol.LinkedObjectType = "2";
+
+
+
 
                 // Preenchendo as datas no txtDt
                 DateTime today = DateTime.Now;
@@ -393,6 +425,30 @@ namespace AddonWebServiceXml
                 }
             }
 
+
+
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false  & pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_VISIBLE)
+            {
+                DI.Inicialize();
+                //addUserTable();
+
+                //payment = (SAPbobsCOM.Payments)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.oVendorPayments);
+
+                //Dim oUsrTbl As SAPbobsCOM.UserTablesMD
+
+                //Set oUsrTbl = oComp.GetBusinessObject(oUserTables)
+
+                //oComp.StartTransaction
+
+                //oUsrTbl.TableName = "MyTbl1"
+                //oUsrTbl.TableDescription = "MyTbl1"
+                //RetVal = oUsrTbl.Add
+
+                //If oComp.InTransaction Then
+                //    oComp.EndTransaction
+                //End If
+            }
+
             //if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST & pVal.FormType.Equals("frmWebServXml"))
             //{
             //    BeforeAction ou After
@@ -402,6 +458,149 @@ namespace AddonWebServiceXml
             //    }
 
             //}
+
+            // função quando o botão para selecionar a pasta for pressionado.
+
+            if(FormUID.Equals("frmWebServXml") & (!pVal.BeforeAction) & (pVal.ItemUID.Equals("btnUp")) & (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED))
+            {
+
+                //dynamic retornoLogout = ServiceLayer.Login();
+
+                oForm.Items.Item("btnUp").Enabled = false;
+                //Open();
+                // fazer uma validação antes, para verificar se foi selecionado uma filial;
+
+                Thread t = new Thread(() =>
+                {
+                    var form = new System.Windows.Forms.Form();
+
+                    FolderBrowserDialog dialog = new FolderBrowserDialog();
+
+                    dialog.Description = "Por favor seleciona uma pasta";
+                    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        // = dialog.SelectedPath;
+                        //txtUp.value = dialog.SelectedPath;
+                        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = dialog.SelectedPath;
+                    }
+                    else
+                    {
+                        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
+                    }
+
+                    form.Close();
+                });         
+
+                t.SetApartmentState(ApartmentState.STA);
+                t.Start();
+
+
+
+
+
+                oForm.Items.Item("btnUp").Enabled = true;
+                //     "C:\\";
+
+
+
+
+
+                //Thread t = new Thread(() =>
+                //{
+                //    FolderBrowserDialog dialog = new FolderBrowserDialog();
+
+                //    dialog.Description = "Por favor seleciona uma pasta";
+                //    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+
+                //    if (dialog.ShowDialog() == DialogResult.OK)
+                //    {
+                //        // = dialog.SelectedPath;
+                //        //txtUp.value = dialog.SelectedPath;
+                //        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = dialog.SelectedPath; 
+                //    }
+                //    else
+                //    {
+                //        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
+                //    }
+
+                //});
+
+
+
+            }
+
+        }
+
+        private void Open()
+        {
+            Thread t = new Thread(new ThreadStart(this.DialogoSelecaoArquivo));
+            t.SetApartmentState(ApartmentState.STA);
+            t.Start();
+        }
+
+        private void addUserTable()
+        {
+            try
+            {
+
+                //
+                string body = "{\"CompanyDB\":\"SBO_COPROSUL_PRD\",\"Password\":\"B1admin@\",\"UserName\":\"manager\"}";
+
+                dynamic retorno = ServiceLayer.http("https://hanab1:50000/b1s/v1/Login", "POST",null,body);
+                //if (retorno.SessionId.length > 0)
+                //{
+                    //CardCode eq 'c1'
+                    dynamic retornoTable = ServiceLayer.http("https://hanab1:50000/b1s/v1/UserTablesMD?$filter=TableName eq 'CONFIG_ADDON_XML_SEGURADORA'", "GET", retorno.SessionId, null);
+                    Console.WriteLine(retornoTable);
+
+                //}
+                //if(retorno)
+                //{
+                //}
+
+
+                
+
+                //exemplo de como criar
+                //"{\"CompanyDB\":\"SBO_COPROSUL_PRD\",\"Password\":\"B1admin@\",\"UserName\":\"manager\"}";
+
+
+                // verifica se existe a tabela antes de criar.
+
+
+                // realizar uma chamada na service layer
+
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        private void DialogoSelecaoArquivo()
+        {
+            var form = new System.Windows.Forms.Form();
+
+            FolderBrowserDialog dialog = new FolderBrowserDialog();
+
+            dialog.Description = "Por favor seleciona uma pasta";
+            dialog.RootFolder = Environment.SpecialFolder.MyComputer;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                // = dialog.SelectedPath;
+                //txtUp.value = dialog.SelectedPath;
+                oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = dialog.SelectedPath;
+            }
+            else
+            {
+                oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
+            }
+
+            form.Close();
 
         }
 
