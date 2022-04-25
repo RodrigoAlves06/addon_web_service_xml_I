@@ -46,6 +46,8 @@ namespace AddonWebServiceXml
                     100);
                 DI.createFieldsTable("seguradora_conf", "pass", "Password", SAPbobsCOM.BoFieldTypes.db_Alpha,
                     100);
+                DI.createFieldsTable("seguradora_conf", "atvSSL", "Ativa SSL", SAPbobsCOM.BoFieldTypes.db_Alpha,
+                    10);
 
             }
 

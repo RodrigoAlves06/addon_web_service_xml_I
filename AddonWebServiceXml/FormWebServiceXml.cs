@@ -58,7 +58,7 @@ namespace AddonWebServiceXml
                 SAPbouiCOM.ComboBox oComboBox = null;
                 SAPbouiCOM.StaticText oStaticText = null;
                 SAPbouiCOM.EditText oEditText = null;
-
+                SAPbouiCOM.OptionBtn oPtionBtn = null;
                 SAPbouiCOM.FormCreationParams oCreationParams = null;
                 oCreationParams = ((SAPbouiCOM.FormCreationParams)(oApplication.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_FormCreationParams)));
 
@@ -476,11 +476,82 @@ namespace AddonWebServiceXml
 
                 oEditText.DataBind.SetBound(true, "", "EditTextEE");
 
+
+                // Adicionando Label
+                oItem = oForm.Items.Add("lblpas", BoFormItemTypes.it_STATIC);
+                oItem.Left = 30;
+                oItem.Width = 100;
+                oItem.Top = 129;
+                oItem.Height = 19;
+
+                // comando para deixar visivel nesse folder
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+
+                oItem.LinkTo = "txtpas"; //Serve para linkar o objeto com outro.
+
+                oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
+                oStaticText.Caption = "Senha:";
+
+                // Adicionando combobox
+
+                oItem = oForm.Items.Add("txtpas", BoFormItemTypes.it_EXTEDIT);
+                oItem.Left = 130;
+                oItem.Width = 300;
+                oItem.Top = 129;
+                oItem.Height = 19;
+
+                // comando para deixar visivel nesse folder
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+
+                oItem.LinkTo = "lblpas"; //Serve para linkar o objeto com outro.
+
+                oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
+
+                oEditText.DataBind.SetBound(true, "", "EditPS");
+
+
+                // Adicionando Label
+                oItem = oForm.Items.Add("lblass", BoFormItemTypes.it_STATIC);
+                oItem.Left = 30;
+                oItem.Width = 100;
+                oItem.Top = 169;
+                oItem.Height = 19;
+
+                // comando para deixar visivel nesse folder
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+
+                oItem.LinkTo = "txtass"; //Serve para linkar o objeto com outro.
+
+                oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
+                oStaticText.Caption = "Assunto:";
+
+                // Adicionando combobox
+
+                oItem = oForm.Items.Add("txtass", BoFormItemTypes.it_EXTEDIT);
+                oItem.Left = 130;
+                oItem.Width = 300;
+                oItem.Top = 169;
+                oItem.Height = 19;
+
+                // comando para deixar visivel nesse folder
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+
+                oItem.LinkTo = "lblass"; //Serve para linkar o objeto com outro.
+
+                oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
+
+                oEditText.DataBind.SetBound(true, "", "EditSAS");
+
+
                 // Adicionando Label
                 oItem = oForm.Items.Add("lblsmtp", BoFormItemTypes.it_STATIC);
                 oItem.Left = 30;
                 oItem.Width = 100;
-                oItem.Top = 129;
+                oItem.Top = 209;
                 oItem.Height = 19;
 
                 // comando para deixar visivel nesse folder
@@ -497,7 +568,7 @@ namespace AddonWebServiceXml
                 oItem = oForm.Items.Add("txtsmt", BoFormItemTypes.it_EXTEDIT);
                 oItem.Left = 130;
                 oItem.Width = 100;
-                oItem.Top = 129;
+                oItem.Top = 209;
                 oItem.Height = 19;
 
                 // comando para deixar visivel nesse folder
@@ -509,6 +580,33 @@ namespace AddonWebServiceXml
                 oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
 
                 oEditText.DataBind.SetBound(true, "", "EditTextSM");
+
+
+                oItem = oForm.Items.Add("optBtn", BoFormItemTypes.it_OPTION_BUTTON);
+                oItem.Left = 30;
+                oItem.Width = 120;
+                oItem.Top = 249;
+                oItem.Height = 19;
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+                oPtionBtn = ((SAPbouiCOM.OptionBtn)(oItem.Specific));
+                oPtionBtn.Caption = "Ativar SSL";
+
+                ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtn").Specific)).Selected = true;
+
+                oPtionBtn.DataBind.SetBound(true, "", "OptDS");
+
+                oItem = oForm.Items.Add("optBtD", BoFormItemTypes.it_OPTION_BUTTON);
+                oItem.Left = 30;
+                oItem.Width = 120;
+                oItem.Top = 269;
+                oItem.Height = 19;
+                oItem.FromPane = 2;
+                oItem.ToPane = 2;
+                oPtionBtn = ((SAPbouiCOM.OptionBtn)(oItem.Specific));
+                oPtionBtn.Caption = "Desativar SSL";
+
+                oPtionBtn.GroupWith("optBtn");
 
 
                 // Adicionando Label
@@ -545,91 +643,12 @@ namespace AddonWebServiceXml
 
                 oEditText.DataBind.SetBound(true, "", "EditTextMM");
 
-                //---------------------------------------------------------------------------------
-
-
-                // Adicionando Label
-                oItem = oForm.Items.Add("lblass", BoFormItemTypes.it_STATIC);
-                oItem.Left = 30;
-                oItem.Width = 100;
-                oItem.Top = 169;
-                oItem.Height = 19;
-
-                // comando para deixar visivel nesse folder
-                oItem.FromPane = 2;
-                oItem.ToPane = 2;
-
-                oItem.LinkTo = "txtass"; //Serve para linkar o objeto com outro.
-
-                oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
-                oStaticText.Caption = "Assunto:";
-
-                // Adicionando combobox
-
-                oItem = oForm.Items.Add("txtass", BoFormItemTypes.it_EXTEDIT);
-                oItem.Left = 130;
-                oItem.Width = 100;
-                oItem.Top = 169;
-                oItem.Height = 19;
-
-                // comando para deixar visivel nesse folder
-                oItem.FromPane = 2;
-                oItem.ToPane = 2;
-
-                oItem.LinkTo = "lblass"; //Serve para linkar o objeto com outro.
-
-                oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
-
-                oEditText.DataBind.SetBound(true, "", "EditTextSAS");
-
-
-
-
-                // Adicionando Label
-                oItem = oForm.Items.Add("lblpas", BoFormItemTypes.it_STATIC);
-                oItem.Left = 30;
-                oItem.Width = 100;
-                oItem.Top = 209;
-                oItem.Height = 19;
-
-                // comando para deixar visivel nesse folder
-                oItem.FromPane = 2;
-                oItem.ToPane = 2;
-
-                oItem.LinkTo = "txtpas"; //Serve para linkar o objeto com outro.
-
-                oStaticText = ((SAPbouiCOM.StaticText)(oItem.Specific));
-                oStaticText.Caption = "Senha:";
-
-                // Adicionando combobox
-
-                oItem = oForm.Items.Add("txtpas", BoFormItemTypes.it_EXTEDIT);
-                oItem.Left = 130;
-                oItem.Width = 100;
-                oItem.Top = 209;
-                oItem.Height = 19;
-
-                // comando para deixar visivel nesse folder
-                oItem.FromPane = 2;
-                oItem.ToPane = 2;
-
-                oItem.LinkTo = "lblpas"; //Serve para linkar o objeto com outro.
-
-                oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
-
-                oEditText.DataBind.SetBound(true, "", "EditTextPS");
-
-
-
-
-
-
                 // adicionando um button para selecionar o diretorio;
 
                 oItem = oForm.Items.Add("btnSav", BoFormItemTypes.it_BUTTON);
                 oItem.Left = 30;
                 oItem.Width = 60;
-                oItem.Top = 189;
+                oItem.Top = 329;
                 oItem.Height = 19;
 
                 oItem.FromPane = 2;
@@ -643,7 +662,7 @@ namespace AddonWebServiceXml
                 oItem = oForm.Items.Add("btnRes", BoFormItemTypes.it_BUTTON);
                 oItem.Left = 100;
                 oItem.Width = 60;
-                oItem.Top = 189;
+                oItem.Top = 329;
                 oItem.Height = 19;
 
                 oItem.FromPane = 2;
@@ -651,6 +670,9 @@ namespace AddonWebServiceXml
 
                 oButton = ((SAPbouiCOM.Button)(oItem.Specific));
                 oButton.Caption = "Limpar";
+
+
+
 
                 oApplication.ItemEvent += OApplication_ItemEvent;
 
@@ -700,6 +722,24 @@ namespace AddonWebServiceXml
             if(FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnResetF"))
             {
                 limparFiltro();
+
+            }
+            //btnSav
+
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnSav"))
+            {
+                saveConfig(oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx,
+                    oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx,
+                    oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx, oForm.DataSources.UserDataSources.Item("EditPS").ValueEx,
+                    oForm.DataSources.UserDataSources.Item("OptDS").ValueEx);
+
+
+            }
+
+
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnRes"))
+            {
+                limpaConfig();
 
             }
 
@@ -883,8 +923,10 @@ namespace AddonWebServiceXml
 
             oRecordset = (SAPbobsCOM.Recordset)_company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-            string query = "SELECT \"U_email_seguradora\", \"U_email_emitente\", \"U_smtp\", \"U_mensagem\" FROM " +
-                "\"@SEGURADORA_CONF\"";
+            string query = "SELECT \"U_email_seguradora\", \"U_email_emitente\", \"U_smtp\", \"U_mensagem\" ,\"U_assunto\" " +
+                ", \"U_pass\" , \"U_atvSSL\" FROM  \"@SEGURADORA_CONF\" " +
+                "WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA'";
+
 
             oRecordset.DoQuery(query);
             if (oRecordset.RecordCount > 0)
@@ -893,18 +935,137 @@ namespace AddonWebServiceXml
                 {
                     oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx = oRecordset.Fields.Item("U_email_seguradora").Value.ToString();
                     oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx = oRecordset.Fields.Item("U_email_emitente").Value.ToString();
-                    oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx = oRecordset.Fields.Item("smtp").Value.ToString();
-                    oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx = oRecordset.Fields.Item("mensagem").Value.ToString();
+                    oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx = oRecordset.Fields.Item("U_smtp").Value.ToString();
+                    oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx = oRecordset.Fields.Item("U_mensagem").Value.ToString();
+                    oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx = oRecordset.Fields.Item("U_assunto").Value.ToString();
+                    oForm.DataSources.UserDataSources.Item("EditPS").ValueEx = oRecordset.Fields.Item("U_pass").Value.ToString();
+                    if(oRecordset.Fields.Item("U_pass").Value.ToString() == "1")
+                    {
+                        ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtn").Specific)).Selected = true;
+                    }
+                    else
+                    {
+                        ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtD").Specific)).Selected = true;
+                    }
+                    
                     break;
                 }
             }
             else
             {
-                oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx = "";
-                oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx = "";
-                oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx = "";
-                oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx = "";
+                limpaConfig();
             }
+        }
+
+
+
+        private void preencheUrlFilial(string filial)
+        {
+            string query = "SELECT \"U_filial\", \"U_diretorio\" FROM \"@SEG_CONF_FILIAIS\" " +
+                "WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA' AND " +
+                    "  \"U_filial\" = '" + filial + "'";
+
+
+            oRecordset.DoQuery(query);
+            if (oRecordset.RecordCount > 0)
+            {
+            }
+            else
+            {
+
+            }
+        }
+
+
+        private void saveConfigFilial(string filial , string url)
+        {
+
+            string query = "SELECT \"U_filial\", \"U_diretorio\" FROM \"@SEG_CONF_FILIAIS\" " +
+                "WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA' AND " +
+                "  \"U_filial\" = '" + filial + "'";
+
+
+            oRecordset.DoQuery(query);
+            if (oRecordset.RecordCount > 0)
+            {
+                string update = "UPDATE \"@SEG_CONF_FILIAIS\" SET \"U_diretorio\" = '"+ url+ "' " +
+                    "WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA' AND " +
+                "  \"U_filial\" = '" + filial + "'";
+
+                oRecordset.DoQuery(update);
+            }
+            else
+            {
+                string insert = "INSERT INTO \"@SEG_CONF_FILIAIS\" (\"U_filial\", \"U_diretorio\" ," +
+                    " \"Code\", \"Name\") VALUES ('" + filial + "' , '"+ url +"' , 'ADDON_ALFA_SEGURADORA' , 'ADDON_ALFA_SEGURADORA')";
+                oRecordset.DoQuery(insert);
+            }
+
+        }
+
+        private void limpaConfig()
+        {
+            oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx = "";
+            oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx = "";
+            oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx = "";
+            oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx = "";
+            oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx = "";
+            oForm.DataSources.UserDataSources.Item("EditPS").ValueEx = "";
+            ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtn").Specific)).Selected = true;
+        }
+
+        private void saveConfig(string email_seguradora , string email_emitente, string smtp, string mensagem , string assunto, string pass, string ssl)
+        {
+
+
+            oApp.SetStatusBarMessage(string.Format("Addon - Salvando configurações...",
+            System.Windows.Forms.Application.ProductName),
+            BoMessageTime.bmt_Medium, false);
+
+
+            oRecordset = (SAPbobsCOM.Recordset)_company.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            string query = "SELECT \"U_email_seguradora\", \"U_email_emitente\", \"U_smtp\", \"U_mensagem\" ,\"U_assunto\" " +
+                ", \"U_pass\" , \"U_atvSSL\" FROM  \"@SEGURADORA_CONF\" " +
+                "WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA'";
+
+
+            oRecordset.DoQuery(query);
+            if (oRecordset.RecordCount > 0)
+            {
+                // Executa Update;
+
+                string update = "UPDATE \"@SEGURADORA_CONF\" SET \"U_email_seguradora\" = '" + email_seguradora + "'," +
+                                " \"U_email_emitente\" = '" + email_emitente + "'," +
+                                " \"U_smtp\" = '" + smtp + "'," +
+                                " \"U_mensagem\" = '" + mensagem + "'," +
+                                " \"U_assunto\" = '" + assunto + "'," +
+                                " \"U_pass\" = '" + pass + "'," +
+                                " \"U_atvSSL\" = '" + ssl + "'" +
+                                " WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA'";
+
+                oRecordset.DoQuery(update);
+            }
+            else
+            {
+                // Executa Insert;
+
+                string insert = "INSERT INTO \"@SEGURADORA_CONF\" " +
+                            "(\"U_email_seguradora\", \"U_email_emitente\", \"U_smtp\", \"U_mensagem\", \"U_assunto\", \"U_pass\"," +
+                            " \"U_atvSSL\", \"Code\", \"Name\") " +
+                            "VALUES('" + email_seguradora + "', '" + email_emitente + "', '" + smtp + "'," +
+                            " '" + mensagem + "', '" + assunto + "', '" + pass + "', '" + ssl + "'," +
+                            " 'ADDON_ALFA_SEGURADORA', 'ADDON_ALFA_SEGURADORA')";
+
+                oRecordset.DoQuery(insert);
+            }
+
+
+            oApp.SetStatusBarMessage(string.Format("Addon - Configuração salva com sucesso.",
+            System.Windows.Forms.Application.ProductName),
+            BoMessageTime.bmt_Medium, false);
+
+
         }
 
         private void preencheCombo()
@@ -923,7 +1084,7 @@ namespace AddonWebServiceXml
 
                         if(i == 0)
                         {
-                            ComboBoxDS.ValidValues.Add("0", "Seleione uma filial");
+                            ComboBoxDS.ValidValues.Add("0", "Selecione uma filial");
                             ComboBoxDS.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
                         }
                         ComboBoxDS.ValidValues.Add(oRecordset.Fields.Item(0).Value.ToString(), oRecordset.Fields.Item(1).Value.ToString());
@@ -971,10 +1132,10 @@ namespace AddonWebServiceXml
             oForm.DataSources.UserDataSources.Add("EditTextEE", BoDataType.dt_SHORT_TEXT, 100);
             oForm.DataSources.UserDataSources.Add("EditTextSM", BoDataType.dt_SHORT_TEXT, 10);
             oForm.DataSources.UserDataSources.Add("EditTextMM", BoDataType.dt_SHORT_TEXT, 100);
-            oForm.DataSources.UserDataSources.Add("EditTextSAS", BoDataType.dt_SHORT_TEXT, 100);
-            oForm.DataSources.UserDataSources.Add("EditTextPS", BoDataType.dt_SHORT_TEXT, 100);
+            oForm.DataSources.UserDataSources.Add("EditSAS", BoDataType.dt_SHORT_TEXT, 100);
+            oForm.DataSources.UserDataSources.Add("EditPS", BoDataType.dt_SHORT_TEXT, 100);
             //oForm.DataSources.UserDataSources.Add("StaticTextDS", BoDataType.dt_SHORT_TEXT, 1);
-            // oForm.DataSources.UserDataSources.Add("OptBtnDS", BoDataType.dt_SHORT_TEXT, 1);
+             oForm.DataSources.UserDataSources.Add("OptDS", BoDataType.dt_SHORT_TEXT, 1);
         }
 
         public FormWebServiceXml()
