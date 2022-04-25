@@ -778,10 +778,20 @@ namespace AddonWebServiceXml
             if(FormUID.Equals("frmWebServXml") & (!pVal.BeforeAction) & (pVal.ItemUID.Equals("btnUp")) & (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED))
             {
 
-                //dynamic retornoLogout = ServiceLayer.Login();
+                //SAPbouiCOM.ComboBox ComboBoxDS = (SAPbouiCOM.ComboBox)oForm.Items.Item("cmb").Specific;
+
+                if(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx == "0")
+                {
+                    System.Windows.Forms.MessageBox.Show("É obrigatório selecionar uma filial" , "Erro", System.Windows.Forms.MessageBoxButtons.OK,
+                    System.Windows.Forms.MessageBoxIcon.Error);
+                    return;
+                }
 
                 oForm.Items.Item("btnUp").Enabled = false;
-                //Open();
+                Open();
+
+
+                saveConfigFilial(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx);
                 // fazer uma validação antes, para verificar se foi selecionado uma filial;
 
                 Thread t = new Thread(() =>
@@ -969,10 +979,15 @@ namespace AddonWebServiceXml
             oRecordset.DoQuery(query);
             if (oRecordset.RecordCount > 0)
             {
+                while (!oRecordset.EoF)
+                {
+                    oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = oRecordset.Fields.Item("U_diretorio").Value.ToString();
+                    break;
+                }
             }
             else
             {
-
+                oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
             }
         }
 
