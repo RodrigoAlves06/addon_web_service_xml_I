@@ -743,6 +743,24 @@ namespace AddonWebServiceXml
 
             }
 
+            // Evento vai occorer no momento que trocar a filial no combobox
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_COMBO_SELECT & pVal.ItemUID.Equals("cmb"))
+            {
+
+                oForm.Items.Item("btnUp").Enabled = true;
+
+                // verifica se o valor selecionado é diferente de zero;
+                if (oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx != "0")
+                {
+                    preencheUrlFilial(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx);
+                }
+                else
+                {
+                    oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
+                }
+
+            }
+
 
 
             if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false  & pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_VISIBLE)
@@ -788,11 +806,7 @@ namespace AddonWebServiceXml
                 }
 
                 oForm.Items.Item("btnUp").Enabled = false;
-                Open();
-
-
-                saveConfigFilial(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx);
-                // fazer uma validação antes, para verificar se foi selecionado uma filial;
+               
 
                 Thread t = new Thread(() =>
                 {
@@ -808,10 +822,12 @@ namespace AddonWebServiceXml
                         // = dialog.SelectedPath;
                         //txtUp.value = dialog.SelectedPath;
                         oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = dialog.SelectedPath;
+                        saveConfigFilial(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx);
                     }
                     else
                     {
                         oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
+                        saveConfigFilial(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx);
                     }
 
                     form.Close();
@@ -819,39 +835,6 @@ namespace AddonWebServiceXml
 
                 t.SetApartmentState(ApartmentState.STA);
                 t.Start();
-
-
-
-
-
-                oForm.Items.Item("btnUp").Enabled = true;
-                //     "C:\\";
-
-
-
-
-
-                //Thread t = new Thread(() =>
-                //{
-                //    FolderBrowserDialog dialog = new FolderBrowserDialog();
-
-                //    dialog.Description = "Por favor seleciona uma pasta";
-                //    dialog.RootFolder = Environment.SpecialFolder.MyComputer;
-
-                //    if (dialog.ShowDialog() == DialogResult.OK)
-                //    {
-                //        // = dialog.SelectedPath;
-                //        //txtUp.value = dialog.SelectedPath;
-                //        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = dialog.SelectedPath; 
-                //    }
-                //    else
-                //    {
-                //        oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = "";
-                //    }
-
-                //});
-
-
 
             }
 
@@ -869,6 +852,8 @@ namespace AddonWebServiceXml
         {
             SAPbouiCOM.ComboBox ComboBoxDS = (SAPbouiCOM.ComboBox)oForm.Items.Item("cmb").Specific;
             ComboBoxDS.Select("0", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+            oForm.Items.Item("btnUp").Enabled = true;
 
             // Preenchendo as datas no txtDt
             DateTime today = DateTime.Now;
