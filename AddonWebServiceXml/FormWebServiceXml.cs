@@ -333,7 +333,34 @@ namespace AddonWebServiceXml
                     , ""DocStatus"" AS ""N° Chave de acesso""
                     FROM OINV";
 
-                
+                query = @"SELECT 
+                                '' AS ""Selecione"",
+	                            OINV.""DocDate"" AS ""Data de Faturamento"",
+	                            OINV.""Serial"" AS ""Numero da NF"",
+	                            OINV.""CardCode"" AS ""Código do PN"",
+	                            OINV.""CardName"" AS ""Nome do PN"",
+	                            INV12.""Vehicle"" AS ""Placa do Segurado"",
+	                            ""DBInvOne"".""Process"".""StatusId"" AS ""Status"",
+	                            ""DBInvOne"".""Process"".""KeyNfe"" AS ""N° Chave de Acesso""
+                        FROM 
+                                OINV
+                        INNER JOIN
+                                INV12
+                        ON
+                                INV12.""DocEntry"" = OINV.""DocEntry""
+                        INNER JOIN
+                                ""DBInvOne"".""Process""
+                        ON 
+                                ""DBInvOne"".""Process"".""DocEntry"" = OINV.""DocEntry"" 
+                                AND ""DBInvOne"".""Process"".""CompanyId"" = OINV.""BPLId""
+                                AND ""DBInvOne"".""Process"".""StatusId"" = '4'
+                        WHERE 
+                                OINV.""DocDate"" BETWEEN '" + oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx + "'
+                                AND '" + 'oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx + "'
+                                AND OINV.""CANCELED"" = 'N' 
+                                AND INV12.""Vehicle"" IN(SELECT ""U_placa""  FROM ""@SEG_VEICULOS"")";
+
+
                 oForm.DataSources.DataTables.Item(0).ExecuteQuery(query);
                 oGrid.DataTable = oForm.DataSources.DataTables.Item("DataTable");
 
