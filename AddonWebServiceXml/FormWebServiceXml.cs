@@ -307,95 +307,6 @@ namespace AddonWebServiceXml
                 oButton = ((SAPbouiCOM.Button)(oItem.Specific));
                 oButton.Caption = "Selecione a pasta XML";
 
-
-                // adicionando um grid
-                oItem = oForm.Items.Add("grid", SAPbouiCOM.BoFormItemTypes.it_GRID);
-                oItem.Left = 52;
-                oItem.Top = 180;
-                oItem.Width = 900;
-                oItem.Height = 350;
-
-                // comando para deixar visivel nesse folder
-                oItem.FromPane = 1;
-                oItem.ToPane = 1;
-
-                oGrid = ((SAPbouiCOM.Grid)(oItem.Specific));
-
-                oForm.DataSources.DataTables.Add("DataTable");
-                string query = @"SELECT 
-                    '' AS ""Selecione"" 
-                    , ""CardCode"", /* AS ""Data do Faturamento"",*/
-                    ""CardName"" AS ""Número da NF"" 
-                    , ""DocDate"" AS ""Código do PN""
-                    , ""DocDate"" AS ""Nome do PN""
-                    , ""DocNum"" AS ""Placa Segurado""
-                    , ""DocStatus"" AS ""Status""
-                    , ""DocStatus"" AS ""N° Chave de acesso""
-                    FROM OINV";
-
-                query = @"SELECT 
-                                '' AS ""Selecione"",
-	                            OINV.""DocDate"" AS ""Data de Faturamento"",
-	                            OINV.""Serial"" AS ""Numero da NF"",
-	                            OINV.""CardCode"" AS ""Código do PN"",
-	                            OINV.""CardName"" AS ""Nome do PN"",
-	                            INV12.""Vehicle"" AS ""Placa do Segurado"",
-	                            ""DBInvOne"".""Process"".""StatusId"" AS ""Status"",
-	                            ""DBInvOne"".""Process"".""KeyNfe"" AS ""N° Chave de Acesso""
-                        FROM 
-                                OINV
-                        INNER JOIN
-                                INV12
-                        ON
-                                INV12.""DocEntry"" = OINV.""DocEntry""
-                        INNER JOIN
-                                ""DBInvOne"".""Process""
-                        ON 
-                                ""DBInvOne"".""Process"".""DocEntry"" = OINV.""DocEntry"" 
-                                AND ""DBInvOne"".""Process"".""CompanyId"" = OINV.""BPLId""
-                                AND ""DBInvOne"".""Process"".""StatusId"" = '4'
-                        WHERE 
-                                OINV.""DocDate"" BETWEEN '" + oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx + "'
-                                AND '" + 'oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx + "'
-                                AND OINV.""CANCELED"" = 'N' 
-                                AND INV12.""Vehicle"" IN(SELECT ""U_placa""  FROM ""@SEG_VEICULOS"")";
-
-
-                oForm.DataSources.DataTables.Item(0).ExecuteQuery(query);
-                oGrid.DataTable = oForm.DataSources.DataTables.Item("DataTable");
-
-                oGrid.Columns.Item(0).Width = 60;
-                oGrid.Columns.Item(1).Width = 130;
-                oGrid.Columns.Item(2).Width = 100;
-                oGrid.Columns.Item(3).Width = 90;
-                oGrid.Columns.Item(4).Width = 100;
-                oGrid.Columns.Item(5).Width = 100;
-                oGrid.Columns.Item(6).Width = 100;
-                oGrid.Columns.Item(7).Width = 180;
-
-                oForm.PaneLevel = 1;
-
-                // setando para as colunas não serem editaveis.
-
-                oGrid.Columns.Item(1).Editable = false;
-                oGrid.Columns.Item(2).Editable = false;
-                oGrid.Columns.Item(3).Editable = false;
-                oGrid.Columns.Item(4).Editable = false;
-                oGrid.Columns.Item(5).Editable = false;
-                oGrid.Columns.Item(6).Editable = false;
-                oGrid.Columns.Item(7).Editable = false;
-
-                oGrid.Columns.Item(0).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
-
-                // Fazendo uma coluna um botão para abrir o documento.
-
-                SAPbouiCOM.EditTextColumn oEditCol;
-                oEditCol = ((SAPbouiCOM.EditTextColumn)(oGrid.Columns.Item("CardCode")));
-                oEditCol.LinkedObjectType = "2";
-
-
-                
-
                 oItem = oForm.Items.Add("btnSearch", BoFormItemTypes.it_BUTTON);
                 oItem.Left = 870;
                 oItem.Width = 60;
@@ -420,14 +331,6 @@ namespace AddonWebServiceXml
                 oButton = ((SAPbouiCOM.Button)(oItem.Specific));
                 oButton.Caption = "Limpar filtro";
 
-
-
-                // Preenchendo as datas no txtDt
-                DateTime today = DateTime.Now;
-                today = today.AddDays(-30);
-
-                oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx = today.ToString("yyyyMMdd");
-                oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx = DateTime.Now.ToString("yyyyMMdd");
                 
 
                 ((SAPbouiCOM.Folder)(oForm.Items.Item("Conteudo").Specific)).Select(); // vai setar para acessar a primeira ABA.
@@ -700,10 +603,21 @@ namespace AddonWebServiceXml
 
 
 
+                // adicionando um grid
+                oItem = oForm.Items.Add("grid", SAPbouiCOM.BoFormItemTypes.it_GRID);
+                oItem.Left = 52;
+                oItem.Top = 180;
+                oItem.Width = 900;
+                oItem.Height = 350;
+
+                // comando para deixar visivel nesse folder
+                oItem.FromPane = 1;
+                oItem.ToPane = 1;
+
+                oForm.PaneLevel = 1;
 
                 oApplication.ItemEvent += OApplication_ItemEvent;
 
-                // Add 
             }
             catch (Exception ex)
             {
@@ -714,6 +628,55 @@ namespace AddonWebServiceXml
 
 
 
+        }
+
+        private void preencheGrid(string filial, string dateIni, string dateFin)
+        {
+            oGrid = ((SAPbouiCOM.Grid)(oItem.Specific));
+
+            oForm.DataSources.DataTables.Add("DataTable");
+
+            //var dateIni = oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx;
+            //var dateFin = oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx;
+            string status = "4";
+            //string filial = "1";
+
+
+
+            string query = "CALL LISTAGEMNOTAS(" + dateIni + ", " + dateFin + " , " + status + ", " + filial + " )";
+            //string query = "CALL TestProc1(" + dateIni + ", " + dateFin + ")"
+
+            oForm.DataSources.DataTables.Item(0).ExecuteQuery(query);
+            oGrid.DataTable = oForm.DataSources.DataTables.Item("DataTable");
+
+            oGrid.Columns.Item(0).Width = 60;
+            oGrid.Columns.Item(1).Width = 120;
+            oGrid.Columns.Item(2).Width = 100;
+            oGrid.Columns.Item(3).Width = 90;
+            oGrid.Columns.Item(4).Width = 100;
+            oGrid.Columns.Item(5).Width = 100;
+            oGrid.Columns.Item(6).Width = 50;
+            oGrid.Columns.Item(7).Width = 240;
+
+
+
+            // setando para as colunas não serem editaveis.
+
+            oGrid.Columns.Item(1).Editable = false;
+            oGrid.Columns.Item(2).Editable = false;
+            oGrid.Columns.Item(3).Editable = false;
+            oGrid.Columns.Item(4).Editable = false;
+            oGrid.Columns.Item(5).Editable = false;
+            oGrid.Columns.Item(6).Editable = false;
+            oGrid.Columns.Item(7).Editable = false;
+
+            oGrid.Columns.Item(0).Type = SAPbouiCOM.BoGridColumnType.gct_CheckBox;
+
+            // Fazendo uma coluna um botão para abrir o documento.
+
+            SAPbouiCOM.EditTextColumn oEditCol;
+            oEditCol = ((SAPbouiCOM.EditTextColumn)(oGrid.Columns.Item(3)));
+            oEditCol.LinkedObjectType = "2";
         }
 
         private void OApplication_ItemEvent(string FormUID, ref ItemEvent pVal, out bool BubbleEvent)
@@ -764,6 +727,29 @@ namespace AddonWebServiceXml
             }
 
 
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnSearch"))
+            {
+                // validar se a data inicio não é maior que a data final.
+
+                if (oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx == "0")
+                {
+                    oApp.StatusBar.SetText("Necessário selecionar uma filial", BoMessageTime.bmt_Medium,
+                        BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                if (Convert.ToInt32(oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx) > Convert.ToInt32(oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx))
+                {
+                    oApp.StatusBar.SetText("Data inicial não pode ser maior que a data final", BoMessageTime.bmt_Medium,
+                        BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+
+                preencheGrid(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx , oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx);
+
+            }
+
             if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnRes"))
             {
                 limpaConfig();
@@ -792,8 +778,6 @@ namespace AddonWebServiceXml
 
             if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false  & pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_VISIBLE)
             {
-                // Realiza a criação das tabelas utilizadas no addon.
-                DI.Inicialize();
 
                 // Preenche com base nos dados salvos de configuração.
                 preencheForm();
@@ -801,6 +785,14 @@ namespace AddonWebServiceXml
 
                 // Preenche combo.
                 preencheCombo();
+
+                // Preenchendo as datas no txtDt
+                DateTime today = DateTime.Now;
+                today = today.AddDays(-30);
+
+                oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx = today.ToString("yyyyMMdd");
+                oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx = DateTime.Now.ToString("yyyyMMdd");
+
 
                 oApp.SetStatusBarMessage(string.Format("Addon pronto para uso",
                 System.Windows.Forms.Application.ProductName),
@@ -1168,6 +1160,9 @@ namespace AddonWebServiceXml
         public FormWebServiceXml()
         {
             SetApplication();
+
+            // Realiza a criação das tabelas utilizadas no addon.
+            DI.Inicialize();
 
             createForm();
 
