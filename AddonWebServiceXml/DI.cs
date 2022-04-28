@@ -40,6 +40,8 @@ namespace AddonWebServiceXml
                      100);
                 DI.createFieldsTable("seguradora_conf", "smtp", "SMTP", SAPbobsCOM.BoFieldTypes.db_Alpha,
                      10);
+                DI.createFieldsTable("seguradora_conf", "host", "Host SMTP", SAPbobsCOM.BoFieldTypes.db_Alpha,
+     100);
                 DI.createFieldsTable("seguradora_conf", "mensagem", "Mensagem", SAPbobsCOM.BoFieldTypes.db_Alpha,
                      100);
                 DI.createFieldsTable("seguradora_conf", "assunto", "Assunto", SAPbobsCOM.BoFieldTypes.db_Alpha,
