@@ -1320,7 +1320,7 @@ namespace AddonWebServiceXml
                                 " \"U_mensagem\" = '" + mensagem + "'," +
                                 " \"U_assunto\" = '" + assunto + "'," +
                                 " \"U_pass\" = '" + pass + "'," +
-                                " \"U_atvSSL\" = '" + ssl + "'" +
+                                " \"U_atvSSL\" = '" + ssl + "'," +
                                 " \"U_host\" = '" + hostSmtp + "'" +
                                 " WHERE \"Code\" = 'ADDON_ALFA_SEGURADORA' AND \"Name\" = 'ADDON_ALFA_SEGURADORA'";
 
