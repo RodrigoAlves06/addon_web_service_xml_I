@@ -210,7 +210,7 @@ namespace AddonWebServiceXml
                 oItem.Width = 65;
                 oItem.Top = 49;
                 oItem.Height = 14;
-                oItem.Enabled = false;
+                oItem.Enabled = true;
                 // comando para deixar visivel nesse folder
                 oItem.FromPane = 1;
                 oItem.ToPane = 1;
@@ -245,7 +245,7 @@ namespace AddonWebServiceXml
                 oItem.Width = 65;
                 oItem.Top = 69;
                 oItem.Height = 14;
-                oItem.Enabled = false;
+                oItem.Enabled = true;
 
                 // comando para deixar visivel nesse folder
                 oItem.FromPane = 1;
@@ -438,6 +438,7 @@ namespace AddonWebServiceXml
                 oItem.LinkTo = "lblpas"; //Serve para linkar o objeto com outro.
 
                 oEditText = ((SAPbouiCOM.EditText)(oItem.Specific));
+                oEditText.IsPassword = true;
 
                 oEditText.DataBind.SetBound(true, "", "EditPS");
 
@@ -521,10 +522,13 @@ namespace AddonWebServiceXml
                 oItem.ToPane = 2;
                 oPtionBtn = ((SAPbouiCOM.OptionBtn)(oItem.Specific));
                 oPtionBtn.Caption = "Ativar SSL";
-
-                ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtn").Specific)).Selected = true;
+                oPtionBtn.Selected = true;
 
                 oPtionBtn.DataBind.SetBound(true, "", "OptDS");
+
+                
+
+
 
                 oItem = oForm.Items.Add("optBtD", BoFormItemTypes.it_OPTION_BUTTON);
                 oItem.Left = 30;
@@ -535,8 +539,9 @@ namespace AddonWebServiceXml
                 oItem.ToPane = 2;
                 oPtionBtn = ((SAPbouiCOM.OptionBtn)(oItem.Specific));
                 oPtionBtn.Caption = "Desativar SSL";
-
                 oPtionBtn.GroupWith("optBtn");
+
+                //((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtD").Specific)).Selected = true;
 
 
                 // Adicionando Label
@@ -616,6 +621,13 @@ namespace AddonWebServiceXml
 
                 oForm.PaneLevel = 1;
 
+                // Preenchendo as datas no txtDt
+                DateTime today = DateTime.Now;
+                today = today.AddDays(-30);
+
+                oForm.DataSources.UserDataSources.Item("EditTextI").Value = today.ToString("yyyyMMdd");
+                oForm.DataSources.UserDataSources.Item("EditTextF").Value = DateTime.Now.ToString("yyyyMMdd");
+
                 oApplication.ItemEvent += OApplication_ItemEvent;
 
             }
@@ -686,13 +698,13 @@ namespace AddonWebServiceXml
             if (FormUID.Equals("frmWebServXml"))
             {
                 oForm = oApplication.Forms.Item(FormUID);
-                switch(pVal.EventType)
+                switch (pVal.EventType)
                 {
                     case BoEventTypes.et_ITEM_PRESSED:
-                        if(pVal.ItemUID.Equals("Conteudo"))
+                        if (pVal.ItemUID.Equals("Conteudo"))
                         {
                             oForm.PaneLevel = 1;
-                        }else if (pVal.ItemUID.Equals("Conf"))
+                        } else if (pVal.ItemUID.Equals("Conf"))
                         {
                             oForm.PaneLevel = 2;
                         }
@@ -709,7 +721,7 @@ namespace AddonWebServiceXml
                 }
             }
 
-            if(FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnResetF"))
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnResetF"))
             {
                 limparFiltro();
 
@@ -718,10 +730,18 @@ namespace AddonWebServiceXml
 
             if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED & pVal.ItemUID.Equals("btnSav"))
             {
+                if(oForm.DataSources.UserDataSources.Item("OptDS").Value == "")
+                {
+                    oApp.StatusBar.SetText("Selecione uma opção SSL", BoMessageTime.bmt_Medium,
+                        BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+
                 saveConfig(oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx,
                     oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx,
                     oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx, oForm.DataSources.UserDataSources.Item("EditPS").ValueEx,
-                    oForm.DataSources.UserDataSources.Item("OptDS").ValueEx);
+                    oForm.DataSources.UserDataSources.Item("OptDS").Value);
 
 
             }
@@ -738,7 +758,11 @@ namespace AddonWebServiceXml
                     return;
                 }
 
-                if (Convert.ToInt32(oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx) > Convert.ToInt32(oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx))
+                var dataIn = DateTime.Parse(oForm.DataSources.UserDataSources.Item("txtDtI").Value).ToString("yyyy-MM-dd");
+                var dataFin = DateTime.Parse(oForm.DataSources.UserDataSources.Item("txtDtF").Value).ToString("yyyy-MM-dd");
+
+
+                if (Convert.ToDateTime(dataIn)  > Convert.ToDateTime(dataFin))
                 {
                     oApp.StatusBar.SetText("Data inicial não pode ser maior que a data final", BoMessageTime.bmt_Medium,
                         BoStatusBarMessageType.smt_Error);
@@ -746,7 +770,7 @@ namespace AddonWebServiceXml
                 }
 
 
-                preencheGrid(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx , oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx);
+                preencheGrid(oForm.DataSources.UserDataSources.Item("ComboBoxDS").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx, oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx);
 
             }
 
@@ -776,7 +800,7 @@ namespace AddonWebServiceXml
 
 
 
-            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false  & pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_VISIBLE)
+            if (FormUID.Equals("frmWebServXml") & pVal.BeforeAction == false & pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_VISIBLE)
             {
 
                 // Preenche com base nos dados salvos de configuração.
@@ -786,12 +810,7 @@ namespace AddonWebServiceXml
                 // Preenche combo.
                 preencheCombo();
 
-                // Preenchendo as datas no txtDt
-                DateTime today = DateTime.Now;
-                today = today.AddDays(-30);
 
-                oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx = today.ToString("yyyyMMdd");
-                oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx = DateTime.Now.ToString("yyyyMMdd");
 
 
                 oApp.SetStatusBarMessage(string.Format("Addon pronto para uso",
@@ -811,8 +830,112 @@ namespace AddonWebServiceXml
             //}
 
             // função quando o botão para selecionar a pasta for pressionado.
+            if (FormUID.Equals("frmWebServXml") & (!pVal.BeforeAction) & (pVal.ItemUID.Equals("btnSend")) & (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED))
+            {
 
-            if(FormUID.Equals("frmWebServXml") & (!pVal.BeforeAction) & (pVal.ItemUID.Equals("btnUp")) & (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED))
+                // verificar se foi preenchido as configurações que realizam o envio por email.
+
+                if (oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx == "")
+                {
+                    oApp.StatusBar.SetText("Não foi preenchido o caminho de armazenamento", BoMessageTime.bmt_Medium,
+                    BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                if (oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx == "")
+                {
+                    oApp.StatusBar.SetText("Não foi preenchido o e-mail destinatário, verifique as configurações", BoMessageTime.bmt_Medium,
+                    BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                if (oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx == "")
+                {
+                    oApp.StatusBar.SetText("Não foi preenchido o e-mail emitente, verifique as configurações", BoMessageTime.bmt_Medium,
+                    BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                if (oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx == "")
+                {
+                    oApp.StatusBar.SetText("Não foi preenchido o SMTP, verifique as configurações", BoMessageTime.bmt_Medium,
+                    BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                if (oForm.DataSources.UserDataSources.Item("EditPS").ValueEx == "")
+                {
+                    oApp.StatusBar.SetText("Não foi preenchido o password, verifique as configurações", BoMessageTime.bmt_Medium,
+                    BoStatusBarMessageType.smt_Error);
+                    return;
+                }
+
+                // pegar todos os documentos selecionador e vai enviar o XML com base no endereço.
+
+                if (oGrid != null)
+                {
+                    if (oGrid.Rows.Count > 0)
+                    {
+                        // array para armazenar a chave de acesso das notas que vão ser enviadas por email
+                        List<object> listChaveAcesso = new List<object>();
+                        for (int i = 0; i < oGrid.Rows.Count; i++)
+                        {
+                            Console.WriteLine(oGrid.DataTable.GetValue("Selecione", i));
+
+                            if(oGrid.DataTable.GetValue("Selecione", i) == "Y")
+                            {
+                                listChaveAcesso.Add(oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx + "\"" 
+                                    + oGrid.DataTable.GetValue("N° Chave de Acesso", i) + ";");
+                            }
+
+
+                        }
+
+                        // verifica se a lista de chave de acesso é maior que zero e se for será enviado o email.
+                        if (listChaveAcesso.Count > 0)
+                        {
+                            string assunto = "";
+                            if(oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx != "")
+                            {
+                                assunto = oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx;
+                            }
+                            else
+                            {
+                                assunto = "Envio de XML";
+                            }
+                            sendEmail(oForm.DataSources.UserDataSources.Item("EditTextEE").ValueEx,
+                                oForm.DataSources.UserDataSources.Item("EditPS").ValueEx,
+                                Convert.ToInt32(oForm.DataSources.UserDataSources.Item("EditTextSM").ValueEx),
+                                oForm.DataSources.UserDataSources.Item("EditTextES").ValueEx, listChaveAcesso, assunto,
+                                oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx
+                                , true);
+
+                            oApp.SetStatusBarMessage(string.Format("Addon Alfa Seguradora - Concluído envio de e-amil. ",
+                            System.Windows.Forms.Application.ProductName),
+                            BoMessageTime.bmt_Medium, false);
+                        }
+                        else
+                        {
+                            oApp.StatusBar.SetText("Não foi encontrado nenhum valor selecionado na grid para ser enviado", BoMessageTime.bmt_Medium,
+                            BoStatusBarMessageType.smt_Error);
+                            return;
+
+                        }
+                    }
+                    else
+                    {
+                        oApp.StatusBar.SetText("Não foi encontrado valores na grid para serem enviados", BoMessageTime.bmt_Medium,
+                        BoStatusBarMessageType.smt_Error);
+                        return;
+                    }
+
+
+                }
+            }
+
+
+
+                if (FormUID.Equals("frmWebServXml") & (!pVal.BeforeAction) & (pVal.ItemUID.Equals("btnUp")) & (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED))
             {
 
                 //SAPbouiCOM.ComboBox ComboBoxDS = (SAPbouiCOM.ComboBox)oForm.Items.Item("cmb").Specific;
@@ -878,12 +1001,12 @@ namespace AddonWebServiceXml
             DateTime today = DateTime.Now;
             today = today.AddDays(-30);
 
-            oForm.DataSources.UserDataSources.Item("EditTextI").ValueEx = today.ToString("yyyyMMdd");
-            oForm.DataSources.UserDataSources.Item("EditTextF").ValueEx = DateTime.Now.ToString("yyyyMMdd");
-            oForm.DataSources.UserDataSources.Item("EditTextDS").ValueEx = ""; 
+            oForm.DataSources.UserDataSources.Item("EditTextI").Value = today.ToString("yyyyMMdd");
+            oForm.DataSources.UserDataSources.Item("EditTextF").Value = DateTime.Now.ToString("yyyyMMdd");
+            oForm.DataSources.UserDataSources.Item("EditTextDS").Value = ""; 
         }
 
-        private void sendEmail(string emailEmitente , string pass, int portaSmtp, string emailDest, string caminhoFile, string assunto , string mensagem , bool ssl)
+        private void sendEmail(string emailEmitente , string pass, int portaSmtp, string emailDest, List<object> caminhoFile, string assunto , string mensagem , bool ssl)
         {
             try
             {
@@ -910,9 +1033,11 @@ namespace AddonWebServiceXml
                         email.IsBodyHtml = false;
                         email.Body = mensagem;
 
-
-                        email.Attachments.Add(new System.Net.Mail.Attachment(caminhoFile));
-                        // ver a necessidade de enviar um email com todos os anexos.
+                        foreach(string url in caminhoFile)
+                        {
+                            email.Attachments.Add(new System.Net.Mail.Attachment(url));
+                        }
+                        
 
                         smtp.Send(email);
                     }
@@ -953,7 +1078,9 @@ namespace AddonWebServiceXml
                     oForm.DataSources.UserDataSources.Item("EditTextMM").ValueEx = oRecordset.Fields.Item("U_mensagem").Value.ToString();
                     oForm.DataSources.UserDataSources.Item("EditSAS").ValueEx = oRecordset.Fields.Item("U_assunto").Value.ToString();
                     oForm.DataSources.UserDataSources.Item("EditPS").ValueEx = oRecordset.Fields.Item("U_pass").Value.ToString();
-                    if(oRecordset.Fields.Item("U_pass").Value.ToString() == "1")
+
+                    // option 
+                    if(oRecordset.Fields.Item("U_atvSSL").Value.ToString() == "1")
                     {
                         ((SAPbouiCOM.OptionBtn)(oForm.Items.Item("optBtn").Specific)).Selected = true;
                     }
